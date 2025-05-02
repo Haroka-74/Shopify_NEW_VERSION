@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Shopify.Models
 {
@@ -8,6 +9,7 @@ namespace Shopify.Models
         [Required(ErrorMessage = "UserId is required.")]
         public string UserId { get; set; } = null!;
         [Required(ErrorMessage = "TotalPrice is required.")]
+        [Column(TypeName = "decimal(18,2)")]
         public decimal TotalPrice { get; set; }
         [Required(ErrorMessage = "CreatedAt is required.")]
         public DateTime CreatedAt { get; set; } = DateTime.Now;
