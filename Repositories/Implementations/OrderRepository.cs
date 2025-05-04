@@ -43,6 +43,16 @@ namespace Shopify.Repositories.Implementations
             await SaveChangesAsync();
         }
 
+        public async Task<List<Order>> GetUserOrders(string userId)
+        {
+            return await context.Orders
+                .Include(o => o.OrderDetails)
+                .ThenInclude(od => od.Product)
+                .Where(o => o.UserId == userId)
+                .OrderByDescending(o => o.CreatedAt)
+                .ToListAsync();
+        }
+
         public async Task SaveChangesAsync() => await context.SaveChangesAsync();
 
     }
