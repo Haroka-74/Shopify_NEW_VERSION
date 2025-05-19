@@ -13,6 +13,7 @@ namespace Shopify.Data
         public DbSet<Cart> Carts { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderDetail> OrderDetails { get; set; }
+        public DbSet<CartItem> CartItems { get; set; }
 
         public ShopifyDbContext(DbContextOptions<ShopifyDbContext> options) : base(options) { }
 

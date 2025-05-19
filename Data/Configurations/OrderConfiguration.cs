@@ -9,7 +9,7 @@ namespace Shopify.Data.Configurations
 
         public void Configure(EntityTypeBuilder<Order> builder)
         {
-            builder.HasMany(order => order.OrderDetails).WithOne(od => od.Order).HasForeignKey(od => od.OrderId).IsRequired();
+            builder.HasMany(o => o.OrderDetails).WithOne(od => od.Order).HasForeignKey(od => od.OrderId).IsRequired();
         }
 
     }

@@ -9,7 +9,7 @@ namespace Shopify.Data.Configurations
 
         public void Configure(EntityTypeBuilder<RefreshToken> builder)
         {
-            builder.HasOne(r => r.User).WithMany(user => user.RefreshTokens).HasForeignKey(r => r.UserId).IsRequired();
+            builder.HasOne(r => r.User).WithMany(u => u.RefreshTokens).HasForeignKey(r => r.UserId).IsRequired();
         }
 
     }

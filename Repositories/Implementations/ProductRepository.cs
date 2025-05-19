@@ -15,9 +15,9 @@ namespace Shopify.Repositories.Implementations
             this.context = context;
         }
 
-        public async Task<List<Product>> GetProductsAsync() => await context.Products.Include(p => p.Category).Include(p => p.Carts).Include(p => p.OrderDetails).ToListAsync();
+        public async Task<List<Product>> GetProductsAsync() => await context.Products.Include(p => p.Category).ToListAsync();
 
-        public async Task<Product?> GetProductAsync(int id) => await context.Products.Include(p => p.Category).Include(p => p.Carts).Include(p => p.OrderDetails).FirstOrDefaultAsync(p => p.Id == id);
+        public async Task<Product?> GetProductAsync(int id) => await context.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.Id == id);
 
         public async Task<Product> AddProductAsync(Product product)
         {

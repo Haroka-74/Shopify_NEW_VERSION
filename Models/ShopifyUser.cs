@@ -10,8 +10,8 @@ namespace Shopify.Models
         [Column(TypeName = "decimal(18,2)")]
         [Range(0, double.MaxValue, ErrorMessage = "Balance cannot be negative.")]
         public decimal Balance { get; set; }
+        public Cart Cart { get; set; } = null!;
         public ICollection<RefreshToken> RefreshTokens { get; set; } = [];
-        public ICollection<Cart> Carts { get; set; } = [];
         public ICollection<Order> Orders { get; set; } = [];
     }
 }

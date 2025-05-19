@@ -15,9 +15,9 @@ namespace Shopify.Repositories.Implementations
             this.context = context;
         }
 
-        public async Task<List<Order>> GetOrdersAsync() => await context.Orders.Include(o => o.User).Include(o => o.OrderDetails).ToListAsync();
+        public async Task<List<Order>> GetOrdersAsync() => await context.Orders.Include(o => o.User).Include(o => o.OrderDetails).ThenInclude(od => od.Product).ToListAsync();
 
-        public async Task<Order?> GetOrderAsync(int id) => await context.Orders.Include(o => o.User).Include(o => o.OrderDetails).FirstOrDefaultAsync(o => o.Id == id);
+        public async Task<Order?> GetOrderAsync(int id) => await context.Orders.Include(o => o.User).Include(o => o.OrderDetails).ThenInclude(od => od.Product).FirstOrDefaultAsync(o => o.Id == id);
 
         public async Task<Order> AddOrderAsync(Order order)
         {
@@ -43,7 +43,7 @@ namespace Shopify.Repositories.Implementations
             await SaveChangesAsync();
         }
 
-        public async Task<List<Order>> GetUserOrders(string userId)
+        public async Task<List<Order>> GetUserOrdersAsync(string userId)
         {
             return await context.Orders
                 .Include(o => o.OrderDetails)

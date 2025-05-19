@@ -26,7 +26,7 @@ namespace Shopify.Models
         [Required(ErrorMessage = "CreatedAt is required.")]
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public Category Category { get; set; } = null!;
-        public ICollection<Cart> Carts { get; set; } = [];
+        public ICollection<CartItem> CartItems { get; set; } = [];
         public ICollection<OrderDetail> OrderDetails { get; set; } = [];
     }
 }

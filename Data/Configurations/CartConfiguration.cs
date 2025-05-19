@@ -9,8 +9,8 @@ namespace Shopify.Data.Configurations
 
         public void Configure(EntityTypeBuilder<Cart> builder)
         {
-            builder.HasOne(cart => cart.User).WithMany(user => user.Carts).HasForeignKey(cart => cart.UserId).IsRequired();
-            builder.HasOne(cart => cart.Product).WithMany(p => p.Carts).HasForeignKey(cart => cart.ProductId).IsRequired();
+            builder.HasOne(c => c.User).WithOne(u => u.Cart).HasForeignKey<Cart>(c => c.UserId).IsRequired();
+            builder.HasMany(c => c.CartItems).WithOne(u => u.Cart).HasForeignKey(ci => ci.CartId).IsRequired();
         }
 
     }
