@@ -17,7 +17,7 @@ namespace Shopify.Services.Implementations
 
         public string GetRefreshToken() => Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
 
-        public async Task<JwtSecurityToken> GetAccessToken(ShopifyUser user)
+        public async Task<JwtSecurityToken> GetAccessTokenAsync(ShopifyUser user)
         {
             var claims = await userManager.GetClaimsAsync(user);
             var roles = await userManager.GetRolesAsync(user);
@@ -27,9 +27,7 @@ namespace Shopify.Services.Implementations
             claims.Add(new Claim(ClaimTypes.Name, user.UserName!));
 
             foreach (var role in roles)
-            {
                 claims.Add(new Claim(ClaimTypes.Role, role));
-            }
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:SecretKey"]!));
             var signingCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
