@@ -5,15 +5,10 @@ using Shopify.Repositories.Interfaces;
 
 namespace Shopify.Repositories.Implementations
 {
-    public class ProductRepository : IProductRepository
+    public class ProductRepository(ShopifyDbContext context) : IProductRepository
     {
 
-        private readonly ShopifyDbContext context;
-
-        public ProductRepository(ShopifyDbContext context)
-        {
-            this.context = context;
-        }
+        private readonly ShopifyDbContext context = context;
 
         public async Task<List<Product>> GetProductsAsync() => await context.Products.Include(p => p.Category).ToListAsync();
 
@@ -29,18 +24,27 @@ namespace Shopify.Repositories.Implementations
         public async Task<Product?> UpdateProductAsync(int id, Product product)
         {
             var existingProduct = await GetProductAsync(id);
-            if (existingProduct is null) return null;
+
+            if (existingProduct is null) 
+                return null;
+
             context.Entry(existingProduct).CurrentValues.SetValues(product);
             await SaveChangesAsync();
+
             return existingProduct;
         }
 
-        public async Task DeleteProductAsync(int id)
+        public async Task<bool> DeleteProductAsync(int id)
         {
             var product = await GetProductAsync(id);
-            if (product is null) return;
+
+            if (product is null) 
+                return false;
+
             context.Products.Remove(product);
             await SaveChangesAsync();
+            
+            return true;
         }
 
         public async Task SaveChangesAsync() => await context.SaveChangesAsync();

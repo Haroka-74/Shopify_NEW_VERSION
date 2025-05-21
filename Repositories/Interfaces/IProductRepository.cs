@@ -8,7 +8,7 @@ namespace Shopify.Repositories.Interfaces
         Task<Product?> GetProductAsync(int id);
         Task<Product> AddProductAsync(Product product);
         Task<Product?> UpdateProductAsync(int id, Product product);
-        Task DeleteProductAsync(int id);
+        Task<bool> DeleteProductAsync(int id);
         Task SaveChangesAsync();
     }
 }

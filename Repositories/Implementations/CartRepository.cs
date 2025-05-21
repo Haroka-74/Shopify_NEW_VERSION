@@ -5,15 +5,10 @@ using Shopify.Repositories.Interfaces;
 
 namespace Shopify.Repositories.Implementations
 {
-    public class CartRepository : ICartRepository
+    public class CartRepository(ShopifyDbContext context) : ICartRepository
     {
 
-        private readonly ShopifyDbContext context;
-
-        public CartRepository(ShopifyDbContext context)
-        {
-            this.context = context;
-        }
+        private readonly ShopifyDbContext context = context;
 
         public async Task<Cart?> GetUserCartAsync(string userId) => await context.Carts.Include(c => c.CartItems).ThenInclude(ci => ci.Product).FirstOrDefaultAsync(c => c.UserId == userId);
 
@@ -50,9 +45,15 @@ namespace Shopify.Repositories.Implementations
         public async Task RemoveItemFromCartAsync(string userId, int productId)
         {
             var cart = await GetUserCartAsync(userId);
-            if (cart is null) return;
+
+            if (cart is null) 
+                return;
+
             var item = GetCartItem(cart, productId);
-            if (item is null) return;
+
+            if (item is null) 
+                return;
+            
             context.CartItems.Remove(item);
             await SaveChangesAsync();
         }
@@ -60,10 +61,14 @@ namespace Shopify.Repositories.Implementations
         public async Task<Cart?> UpdateItemQuantityAsync(string userId, int productId, int quantity)
         {
             var cart = await GetUserCartAsync(userId);
-            if(cart is null) return null;
+
+            if(cart is null) 
+                return null;
 
             var item = GetCartItem(cart, productId);
-            if (item is null) return cart;
+            
+            if (item is null) 
+                return cart;
 
             if (quantity <= 0)
             {
@@ -81,7 +86,10 @@ namespace Shopify.Repositories.Implementations
         public async Task ClearUserCartAsync(string userId)
         {
             var cart = await GetUserCartAsync(userId);
-            if(cart is null) return;
+            
+            if(cart is null) 
+                return;
+            
             cart.CartItems.Clear();
             await SaveChangesAsync();
         }

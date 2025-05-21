@@ -8,7 +8,7 @@ namespace Shopify.Repositories.Interfaces
         Task<Category?> GetCategoryAsync(int id);
         Task<Category> AddCategoryAsync(Category category);
         Task<Category?> UpdateCategoryAsync(int id, Category category);
-        Task DeleteCategoryAsync(int id);
+        Task<bool> DeleteCategoryAsync(int id);
         Task SaveChangesAsync();
     }
 }

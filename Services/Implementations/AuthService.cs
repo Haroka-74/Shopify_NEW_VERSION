@@ -19,10 +19,10 @@ namespace Shopify.Services.Implementations
         public async Task<Result<UserRegistrationResponse>> RegisterAsync(RegisterDTO registerDTO)
         {
             if (await userManager.FindByNameAsync(registerDTO.Username) is not null)
-                return Result<UserRegistrationResponse>.Failure("Username is already registered.", 409);
+                return Result<UserRegistrationResponse>.Failure("Username is already registered", 409);
 
             if(await userManager.FindByEmailAsync(registerDTO.Email) is not null)
-                return Result<UserRegistrationResponse>.Failure("Email is already registered.", 409);
+                return Result<UserRegistrationResponse>.Failure("Email is already registered", 409);
 
             var user = new ShopifyUser()
             {

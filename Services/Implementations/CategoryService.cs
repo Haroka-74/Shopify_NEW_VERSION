@@ -2,6 +2,7 @@
 using Shopify.Models;
 using Shopify.Repositories.Interfaces;
 using Shopify.Services.Interfaces;
+using Shopify.Shared;
 
 namespace Shopify.Services.Implementations
 {
@@ -23,18 +24,20 @@ namespace Shopify.Services.Implementations
             return result;
         }
 
-        public async Task<CategoryDTO?> GetCategoryAsync(int id)
+        public async Task<Result<CategoryDTO>> GetCategoryAsync(int id)
         {
             var category = await categoryRepository.GetCategoryAsync(id);
-            if (category is null) return null;
-            var result = new CategoryDTO
+            
+            if (category is null)
+                return Result<CategoryDTO>.Failure($"Category with id = {id} is not found", 404);
+                        
+            return Result<CategoryDTO>.Success(new CategoryDTO
             {
                 Id = category.Id,
                 Name = category.Name,
                 Description = category.Description,
                 ProductsNames = [.. category.Products.Select(p => p.Name)]
-            };
-            return result;
+            }, 200);
         }
 
         public async Task<Category> AddCategoryAsync(CreateCategoryDTO createCategoryDTO)
@@ -46,18 +49,28 @@ namespace Shopify.Services.Implementations
             });
         }
 
-        public async Task<Category?> UpdateCategoryAsync(int id, CreateCategoryDTO createCategoryDTO)
+        public async Task<Result<Category>> UpdateCategoryAsync(int id, CreateCategoryDTO createCategoryDTO)
         {
-            return await categoryRepository.UpdateCategoryAsync(id, new Category
+            var result = await categoryRepository.UpdateCategoryAsync(id, new Category
             {
                 Name = createCategoryDTO.Name,
                 Description = createCategoryDTO.Description,
             });
+
+            if (result is null) 
+                return Result<Category>.Failure($"Category with id = {id} is not found", 404);
+
+            return Result<Category>.Success(result, 200);
         }
 
-        public async Task DeleteCategoryAsync(int id)
+        public async Task<Result<object>> DeleteCategoryAsync(int id)
         {
-            await categoryRepository.DeleteCategoryAsync(id);
+            var result = await categoryRepository.DeleteCategoryAsync(id);
+
+            if(!result)
+                return Result<object>.Failure($"Category with id = {id} is not found", 404);
+
+            return Result<object>.Success(null!, 204);
         }
 
     }

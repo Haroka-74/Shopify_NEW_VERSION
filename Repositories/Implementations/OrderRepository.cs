@@ -5,15 +5,10 @@ using Shopify.Repositories.Interfaces;
 
 namespace Shopify.Repositories.Implementations
 {
-    public class OrderRepository : IOrderRepository
+    public class OrderRepository(ShopifyDbContext context) : IOrderRepository
     {
 
-        private readonly ShopifyDbContext context;
-
-        public OrderRepository(ShopifyDbContext context)
-        {
-            this.context = context;
-        }
+        private readonly ShopifyDbContext context = context;
 
         public async Task<List<Order>> GetOrdersAsync() => await context.Orders.Include(o => o.User).Include(o => o.OrderDetails).ThenInclude(od => od.Product).ToListAsync();
 
@@ -29,16 +24,23 @@ namespace Shopify.Repositories.Implementations
         public async Task<Order?> UpdateOrderAsync(int id, Order order)
         {
             var existingOrder = await GetOrderAsync(id);
-            if (existingOrder is null) return null;
+
+            if (existingOrder is null) 
+                return null;
+
             context.Entry(existingOrder).CurrentValues.SetValues(order);
             await SaveChangesAsync();
+            
             return existingOrder;
         }
 
         public async Task DeleteOrderAsync(int id)
         {
             var order = await GetOrderAsync(id);
-            if (order is null) return;
+            
+            if (order is null) 
+                return;
+            
             context.Orders.Remove(order);
             await SaveChangesAsync();
         }

@@ -2,6 +2,7 @@
 using Shopify.Models;
 using Shopify.Repositories.Interfaces;
 using Shopify.Services.Interfaces;
+using Shopify.Shared;
 
 namespace Shopify.Services.Implementations
 {
@@ -26,11 +27,14 @@ namespace Shopify.Services.Implementations
             return result;
         }
 
-        public async Task<ProductDTO?> GetProductAsync(int id)
+        public async Task<Result<ProductDTO>> GetProductAsync(int id)
         {
             var product = await productRepository.GetProductAsync(id);
-            if (product is null) return null;
-            var result = new ProductDTO
+
+            if (product is null)
+                return Result<ProductDTO>.Failure($"Product with id = {id} is not found", 404);
+
+            return Result<ProductDTO>.Success(new ProductDTO
             {
                 Id = product.Id,
                 Name = product.Name,
@@ -39,8 +43,7 @@ namespace Shopify.Services.Implementations
                 Image = product.Image,
                 Stock = product.Stock,
                 CategoryName = product.Category.Name
-            };
-            return result;
+            }, 200);
         }
 
         public async Task<Product> AddProductAsync(CreateProductDTO createProductDTO)
@@ -56,9 +59,9 @@ namespace Shopify.Services.Implementations
             });
         }
 
-        public async Task<Product?> UpdateProductAsync(int id, CreateProductDTO createProductDTO)
+        public async Task<Result<Product>> UpdateProductAsync(int id, CreateProductDTO createProductDTO)
         {
-            return await productRepository.UpdateProductAsync(id, new Product
+            var result = await productRepository.UpdateProductAsync(id, new Product
             {
                 Name = createProductDTO.Name,
                 Description = createProductDTO.Description,
@@ -67,11 +70,21 @@ namespace Shopify.Services.Implementations
                 Stock = createProductDTO.Stock,
                 CategoryId = createProductDTO.CategoryId,
             });
+
+            if (result is null)
+                return Result<Product>.Failure($"Product with id = {id} is not found", 404);
+
+            return Result<Product>.Success(result, 200);
         }
 
-        public async Task DeleteProductAsync(int id)
+        public async Task<Result<object>> DeleteProductAsync(int id)
         {
-            await productRepository.DeleteProductAsync(id);
+            var result = await productRepository.DeleteProductAsync(id);
+
+            if (!result)
+                return Result<object>.Failure($"Product with id = {id} is not found", 404);
+
+            return Result<object>.Success(null!, 204);
         }
 
     }
